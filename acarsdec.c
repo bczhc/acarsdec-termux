@@ -180,7 +180,7 @@ static void usage(void)
 	fprintf(stderr,
 		" -g linearity_gain\t: set linearity gain [0-21] default : 18\n");
 	fprintf(stderr,
-		" -s airspydevice_fd f1 [f2]...[f%d]\t: decode from airspy dongle receiving at VHF frequencies f1 and optionally f2 to f%d in Mhz (ie : -s <fd> 131.525 131.725 131.825 )\n", MAXNBCHANNELS, MAXNBCHANNELS);
+		" -s f1 [f2]...[f%d] <fd>\t: decode from airspy dongle receiving at VHF frequencies f1 and optionally f2 to f%d in Mhz (ie : -s 131.525 131.725 131.825 <fd> )\n", MAXNBCHANNELS, MAXNBCHANNELS);
 #endif
 #ifdef	WITH_SDRPLAY
 	fprintf (stderr,

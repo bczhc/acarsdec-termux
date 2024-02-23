@@ -28,6 +28,7 @@
 #include <math.h>
 #include <airspy.h>
 #include "acarsdec.h"
+#include <assert.h>
 
 static unsigned int AIRMULT;
 static unsigned int AIRINRATE;
@@ -71,48 +72,63 @@ int initAirspy(char **argv, int optind)
 	int Fd[MAXNBCHANNELS];
 	int result;
 
-    int airspy_fd = atoi(argv[optind]);
+    if (argv[optind] == NULL) {
+        fprintf(stderr, "Please specify a device fd\n");
+        return -1;
+    }
 
-    result = airspy_open_fd(&device, airspy_fd);
+    int fd_i = optind;
+    int device_fd;
+    while (true) {
+        if (argv[fd_i + 1] == NULL) {
+            device_fd = atoi(argv[fd_i]);
+            break;
+        }
+        ++fd_i;
+    }
+
+    if (optind == fd_i) {
+        fprintf(stderr, "Need a least one frequency\n");
+        return -1;
+    }
+
+    result = airspy_open_fd(&device, device_fd);
     if (result != AIRSPY_SUCCESS) {
         fprintf(stderr, "airspy_open_fd() failed: %s (%d), with fd: %d\n",
-                airspy_error_name(result), result, airspy_fd);
+                airspy_error_name(result), result, device_fd);
         airspy_exit();
         return -1;
     }
-    // consume parameter
-    ++optind;
 
 	uint32_t i,count;
 	uint32_t * supported_samplerates;
 
 	/* parse args */
 	nbch = 0;
-	while ((argF = argv[optind]) && nbch < MAXNBCHANNELS) {
-		Fd[nbch] =
-		    ((int)(1000000 * atof(argF) + INTRATE / 2) / INTRATE) *
-		    INTRATE;
-		optind++;
-		if (Fd[nbch] < 118000000 || Fd[nbch] > 138000000) {
-			fprintf(stderr, "WARNING: Invalid frequency %d\n",
-				Fd[nbch]);
-			continue;
-		}
-		channel[nbch].chn = nbch;
-		channel[nbch].Fr = Fd[nbch];
-		if(Fd[nbch]<minFc) minFc= Fd[nbch];
-		if(Fd[nbch]>maxFc) maxFc= Fd[nbch];
-		nbch++;
-	};
+
+    for (int j = optind; j < fd_i && nbch < MAXNBCHANNELS; ++j, ++nbch) {
+        printf("Freq: %s\n", argv[i]);
+
+        Fd[nbch] =
+                ((int)(1000000 * atof(argF) + INTRATE / 2) / INTRATE) *
+                INTRATE;
+        if (Fd[nbch] < 118000000 || Fd[nbch] > 138000000) {
+            fprintf(stderr, "WARNING: Invalid frequency %d\n",
+                    Fd[nbch]);
+            continue;
+        }
+        channel[nbch].chn = nbch;
+        channel[nbch].Fr = Fd[nbch];
+        if(Fd[nbch]<minFc) minFc= Fd[nbch];
+        if(Fd[nbch]>maxFc) maxFc= Fd[nbch];
+    }
+
 	if (nbch > MAXNBCHANNELS)
 		fprintf(stderr,
 			"WARNING: too many frequencies, taking only the first %d\n",
 			MAXNBCHANNELS);
 
-	if (nbch == 0) {
-		fprintf(stderr, "Need a least one frequency\n");
-		return 1;
-	}
+    assert(nbch > 0);
 
 	/* init airspy */
 
