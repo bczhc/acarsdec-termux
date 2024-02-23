@@ -107,7 +107,8 @@ int initAirspy(char **argv, int optind)
 	nbch = 0;
 
     for (int j = optind; j < fd_i && nbch < MAXNBCHANNELS; ++j, ++nbch) {
-        printf("Freq: %s\n", argv[i]);
+        argF = argv[j];
+        printf("Freq: %s\n", argF);
 
         Fd[nbch] =
                 ((int)(1000000 * atof(argF) + INTRATE / 2) / INTRATE) *
