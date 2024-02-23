@@ -79,7 +79,7 @@ int initAirspy(char **argv, int optind)
 
     int fd_i = optind;
     int device_fd;
-    while (true) {
+    while (1) {
         if (argv[fd_i + 1] == NULL) {
             device_fd = atoi(argv[fd_i]);
             break;
