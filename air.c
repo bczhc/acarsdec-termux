@@ -26,7 +26,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <math.h>
-#include <libairspy/airspy.h>
+#include <airspy.h>
 #include "acarsdec.h"
 
 static unsigned int AIRMULT;
