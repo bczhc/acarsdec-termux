@@ -1,3 +1,31 @@
+<img style="width: 50%" src="https://github.com/bczhc/acarsdec-termux/assets/49330580/5f978d0d-6dea-46b0-8cec-a3c49446af3b">
+
+# Build
+
+This should be compiled in Termux, since Android NDK
+doesn't provide libusb.
+
+```shell
+mkdir build
+cd build
+cmake .. -G Ninja -Dairspy=ON
+ninja
+```
+
+Et, voilà.
+
+# Usage
+
+First grant the USB permission in Termux. Follow [Termux-USB](https://wiki.termux.com/wiki/Termux-usb).
+
+Then a basic use is like this:
+
+```shell
+termux-usb -e './acarsdec -s 126.475' /dev/bus/usb/...
+```
+
+---
+
 # ACARSDEC
 Acarsdec is a multi-channels acars decoder with built-in rtl_sdr, airspy front end or sdrplay device.
 Since 3.0, It comes with a database backend : acarsserv to store received acars messages. (See acarsserv chapter below).
